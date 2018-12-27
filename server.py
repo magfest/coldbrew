@@ -214,29 +214,13 @@ def api_transactions():
         transactions = list(cursor.fetchall())
     return jsonify(transactions)
 
-@app.route("/api/transactions/create", methods=['POST'])
-def api_transactions_create():
-    data = request.get_json(force=True)
-    if not 'account' in data.keys():
-        return jsonify({"success": False, "error": "You must provide the id of an account to charge."})
-    if not 'amount' in data.keys():
-        return jsonify({"success": False, "error": "You must provide the amount of the transaction."})
-    with Cursor() as cursor:
-        cursor.execute("SELECT amount FROM transactions WHERE account = %s", (data['account'],))
-        transactions = cursor.fetchall()
-        total = 0
-        for transaction in transactions:
-            total += transaction['amount']
-        if total + data['amount'] < 0:
-            return jsonify({"success": False, "error": "Insufficient Funds"})
-        ts = time.time()
-        timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (str(data['account']), str(data['amount']), data['note'], timestamp))
-    return jsonify({"success": True})
-
 @app.route("/api/pour", methods=['POST'])
 def api_pour():
     data = request.get_json(force=True)
+    if not 'secret' in data.keys():
+        return jsonify({"success": False, "error": "You must provide a secret key to authorize pours."})
+    if data['secret'].lower() != secrets.DASH_KEY.lower():
+        return jsonify({"success": False, "error": "You must provide a secret key to authorize pours."})
     if not 'account' in data.keys():
         return jsonify({"success": False, "error": "You must provide the id of an account to charge."})
     with Cursor() as cursor:

@@ -1,7 +1,7 @@
 import requests
 import secrets
 
-URL = "https://super2018.uber.magfest.org/uber/jsonrpc/"
+URL = secrets.UBER_URL
 KEY = secrets.UBER_KEY
 
 headers = {
@@ -14,4 +14,5 @@ def lookup (barcode):
         "params": [barcode,]
     }
     resp = requests.post(URL, json=data, headers=headers)
+    print(resp.text)
     return resp.json()["result"]

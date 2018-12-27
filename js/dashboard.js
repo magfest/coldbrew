@@ -3,6 +3,7 @@ var barcodeTimer;
 var interfaceTimer;
 var account = {};
 var funds = "";
+var secretkey = "";
 var mode = "scanning"
 var current = document.querySelector(".current");
 var icon = document.querySelector(".icon");
@@ -16,7 +17,7 @@ function pourDrink() {
     if (mode === "status") {
         console.log("Pouring Drink for: " + account.name);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/transactions/create", true);
+        xhr.open("POST", "/api/pour", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function() {
             if (this.readyState != 4) {
@@ -40,7 +41,7 @@ function pourDrink() {
                 refreshInterface();
             }
         }
-        xhr.send(JSON.stringify({account: account.id, amount: -200, note: "Poured a Coldbrew"}));
+        xhr.send(JSON.stringify({account: account.id, amount: -200, note: "Poured a Coldbrew", "secret": secretkey}));
         mode = "loading";
         refreshInterface();
     }
@@ -92,6 +93,36 @@ function refreshInterface() {
             clearTimeout(interfaceTimer);
         }
         interfaceTimer = setTimeout(resetMode, 2000);
+    } else if (mode === "secret") {
+        current.innerHTML = '<div><input id="hex" type="text"></div>';
+        $('#hex').keyboard({
+            layout: 'custom',
+            customLayout: {
+                'normal' : [
+                    'C D E F',
+                    '8 9 A B',
+                    '4 5 6 7',
+                    '0 1 2 3',
+                    '{bksp} {a} {c}'
+                ]
+            },
+            maxLength: 8,
+            appendLocally: true,
+            reposition: true,
+            restrictInput: true,
+            restrictInclude : 'a b c d e f',
+            useCombos: true,
+            acceptValid: true,
+            validate: function(keyboard, value, isClosing) {
+                return value.length == 8;
+            }
+        });
+        $('#hex').bind('accepted', function(e, keyboard, el) {
+            Cookies.set("secretkey", el.value);
+            secretkey = el.value;
+            mode = "scanning";
+            refreshInterface();
+        });
     }
 }
 
@@ -106,7 +137,6 @@ function lookupAttendee() {
         if (this.status == 200) {
             var data = JSON.parse(this.responseText);
             if (data.success) {
-                console.log("Found attendee");
                 account = data.account;
                 funds = data.funds;
                 mode = "status";
@@ -140,12 +170,18 @@ function handleBarcode(evt) {
         }
     }
     if (barcode.length == 7) {
-        // TODO: Use "barcode" instead of "~ZX1ffQ"
-        // Hardcoded to Mark's barcode 
-        barcode = "~ZX1ffQ";
         lookupAttendee();
         barcode = "";
     }
 }
 
 window.addEventListener('keydown', handleBarcode);
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (Cookies.get('secretkey') != undefined) {
+        secretkey = Cookies.get('secretkey');
+    } else {
+        mode = "secret";
+        refreshInterface();
+    }
+}, false);
