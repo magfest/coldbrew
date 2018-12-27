@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+    <h4>Add Cash Payment From {{ account['name'] }}</h4>
+    <br>
+    <div class="row">
+        <form id="cashform">
+            <div class="row">
+                <div class="input-field">
+                    <input placeholder="Authorized User" name="username" id="username" type="text">
+                    <label for="username">Authorized User</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field">
+                    <input placeholder="" name="password" id="password" type="password">
+                    <label for="password">Authorized Password</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field">
+                    <input placeholder="1000" name="amount" id="amount" type="number">
+                    <label for="amount">Amount (in cents)</label>
+                </div>
+            </div>
+            <input type="hidden" value="{{ account['id'] }}" name="account">
+            <input type="hidden" value="cash" name="payment_type">
+        </form>
+        <button class="btn waves-effect waves-light" onclick="add_cash()">Submit
+            <i class="material-icons right">send</i>
+        </button>
+{% endblock %}
+{% block includes %}
+    <script src="/js/activate-cash.js"></script>
+{% endblock %}

@@ -18,7 +18,7 @@
                 <td>{{ account['badge'] }}</td>
                 <td>{{ account['name'] }}</td>
                 <td>{{ account['email'] }}</td>
-                <td>&#36;{{ '%.2f' | format(balances[account['id']]) }}</td>
+                <td><a href="/activate/cash/{{ account['url'] }}">&#36;{{ '%.2f' | format(balances[account['id']]) }}</a></td>
             </tr>
         </tbody>
         {% endfor %}
@@ -39,7 +39,7 @@
                 <form id="accountform">
                     <div class="row">
                         <div class="input-field">
-                            <input placeholder="Full Name" name="name" id="name" type="text">
+                            <input placeholder="Username" name="name" id="name" type="text">
                             <label for="name">Name</label>
                         </div>
                     </div>
