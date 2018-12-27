@@ -1,7 +1,8 @@
 import requests
+import secrets
 
 URL = "https://super2018.uber.magfest.org/uber/jsonrpc/"
-KEY = "<Insert Key Here>"
+KEY = secrets.UBER_KEY
 
 headers = {
     "X-Auth-Token": KEY,
