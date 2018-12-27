@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI server for tracking coldbrew purchases
+After=network.target
+
+[Service]
+User=mark25
+Group=nginx
+WorkingDirectory=/home/mark25/coldbrew
+Environment="PATH=/home/mark25/coldbrew/venv/bin"
+ExecStart=/home/mark25/coldbrew/venv/bin/uwsgi --ini coldbrew.ini
+
+[Install]
+WantedBy=multi-user.target

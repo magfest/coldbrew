@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>Coldbrew</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style type="text/css">
+            html, body {
+                height: 480px;
+                margin: 0px;
+                color: white;
+            }
+            .content {
+                height: 100%;
+                margin: 0px;
+                background: black;
+            }
+            .iconholder {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+            .icon {
+                font-size: 200px;
+                margin: auto;
+                color: grey;
+            }
+            h4 {
+                margin: auto;
+            }
+            .current {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+            .name {
+                text-align: center;
+                font-size: 50px;
+            }
+            .funds {
+                text-align: center;
+                font-size: 125px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content row">
+            <div class="col s12 m4 iconholder">
+                <i class="icon material-icons">local_drink</i>
+            </div>
+            <div class="col s12 m8 current">
+                <h4>Please scan your badge...</h4>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="/js/dashboard.js"></script>
+    </body>
+</html>
