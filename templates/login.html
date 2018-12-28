@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+    <h4>Please Login</h4>
+    <br>
+    <div class="row">
+        <form id="loginform" method="POST">
+            <div class="row">
+                <div class="input-field">
+                    <input placeholder="Username" name="username" id="username" type="text">
+                    <label for="name">Username</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field">
+                    <input placeholder="********" name="password" id="password" type="password">
+                    <label for="password">Password</label>
+                </div>
+            </div>
+            <button class="btn waves-effect waves-light">Login
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        <h4>Add Account</h4>
+        <br>
+        <div class="row">
+            <form id="accountform">
+                <div class="row">
+                    <div class="input-field">
+                        <input placeholder="Username" name="name" id="name" type="text">
+                        <label for="name">Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field">
+                        <input placeholder="coldbrew@magfest.org" name="email" id="email" type="email">
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field">
+                        <input placeholder="12345" name="badge" id="badge" type="number">
+                        <label for="badge">Badge Number</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field">
+                        <input placeholder="******" name="password" id="password" type="password">
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-red btn red">Cancel</a>
+        <a href="#!" class="waves-effect waves-green btn" onclick="add_account()">Add</a>
+    </div>
+{% endblock %}
+{% block includes %}
+    <script src="/js/accounts-add.js"></script>
+{% endblock %}

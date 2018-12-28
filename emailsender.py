@@ -8,20 +8,17 @@ def welcome(account):
     server.login(secrets.EMAIL_USER, secrets.EMAIL_PASS)
     body = """Dear {name},
 
-You have created an account on the TechOps Nitro ColdBrew system. In order to recoup the cost of renting the kegs of coffee, we are charging for each cup of coldbrew.
-We charging $2.00 per 12oz cup. We can either take this as cash or by credit card through stripe.
+Thanks for making a TechOps Nitro Coldbrew account!
 
-If you would like to pay by cash please talk to Robert Scullin (@rscullin on slack) or Mark Murnane (@bitbyt3r on slack).
+8oz pours of coldbrew coffee are $2 each, and you'll be charged for your total consumption after the event. If you'd like to pay in cash (we prefer you don't, though, as it's a hassle), please talk to Robert Scullin (@rscullin on Slack) or Mark Murnane (@bitbyt3r on Slack).
 
-If you would like to pay by credit card then please go here: https://coldbrew.magevent.net/activate/stripe/{url}
-From that page you can enter your credit card information, as well as a cap on how much you wish to spend. This will not be charged to your card immediately. Instead, stripe will 
-charge for however much you actually spent in one transaction at the end of the week.
+If you would like to link your credit card via Stripe, please visit https://coldbrew.magevent.net/activate/stripe/{url} while on Event Wifi or a MAG laptop. From that page, you can enter your CC info, as well as set an upper limit -- you won't be charged this value, but serves as a way of self-limiting yourself. After the event ends (or we run out), we'll charge you for what you actually consumed.
 
-Once you have added money to your account you can spend it by scanning your badge at the coldbrew kiosk and pressing the 'accept' arrow once per pour. You can also check your balance
-at the kiosk by scanning your badge, then pressing the 'exit' button.
+Once you have added money to your account, you can use it by scanning your MAGFest badge at the kiosk, and pressing the 'accept' arrow for each pour. You can also check your balance at the kiosk by scanning your badge, and then pressing the 'exit' button.
+
+We roughly expect to have enough coldbrew to last the event, but make no guarantees as to how long it'll last. As a reminder, setting a high limit doesn't guarantee you coffee, as it's first-come, first-served.
 
 Thanks, and enjoy!
-Mark
     """.format(name=account['name'], url=account['url'])
     msg = EmailMessage()
     msg.set_content(body)

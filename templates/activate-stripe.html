@@ -28,6 +28,8 @@
 
 {% block content %}
 <h4>Connect {{ account['name'] }} to Stripe</h4>
+<p>This form will allow you to link your credit card to your coldbrew account. The system will not allow you to be charged more than the spending cap you provide.</p>
+<p>Additionally, you will only be billed for your actual usage in a single transaction after MAGFest. Your payment information is securely held by Stripe Inc, and does not touch our server. The source code of this form is available here: <a href="https://github.com/magfest/coldbrew/blob/master/js/activate-stripe.js">ColdBrew</a></a></p>
 <br>
 <div class="row">
     <form id="payment-form">

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <h4>Add Cash Payment From {{ account['name'] }}</h4>
+    <p>Only an admin may use this form to add a cash transaction to this account.</p>
     <br>
     <div class="row">
         <form id="cashform">

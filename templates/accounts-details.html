@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3>{{ account['name'] }}</h3>
+    <ul>
+        <li>Balance: {{ total }}</li>
+        <li>Email Address: {{ account['email'] }}</li>
+        <li>Funding Source: {{ account['payment_type'] }}</li>
+        <li>Badge Number: {{ account['badge'] }}</li>
+    </ul>
+
+    <h4>Transactions</h4>
+    {% if transactions %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Badge</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Amount</th>
+                <th>Note</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.id }}</td>
+                <td>{{ transaction.badge }}</td>
+                <td>{{ transaction.name }}</td>
+                <td>{{ transaction.email }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>{{ transaction.note }}</td>
+                <td>{{ transaction.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No transactions have been committed.</p>
+    {% endif %}
+{% endblock %}

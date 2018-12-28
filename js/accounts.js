@@ -1,4 +1,6 @@
 var modal;
+var delmodal;
+var to_delete;
 
 function add_account() {
     console.log("Adding an account!");
@@ -35,7 +37,47 @@ function open_modal() {
     modal.open();
 }
 
+function delete_account(name, id) {
+    to_delete = {name: name, id: id};
+    var el = document.querySelector('.delete-title');
+    el.innerHTML = "<h4>Delete Account: " + name + "</h4>"
+    delmodal.open();
+}
+
+function confirm_delete() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/accounts/delete", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+        if (this.readyState != 4) {
+            return;
+        }
+        if (this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            if (data.success) {
+                delmodal.close();
+                location.reload();
+            } else {
+                M.toast({html: data.error});
+            }
+        }
+        else {
+            M.toast({html: "Failed to delete account: Server returned "+this.status});
+        }
+    }
+    var formEl = document.getElementById("deleteform");
+    var formdata = new FormData(formEl);
+    var reqdata = {};
+    formdata.forEach(function(value, key) {
+        reqdata[key] = value;
+    });
+    reqdata['account'] = to_delete.id;
+    xhr.send(JSON.stringify(reqdata));
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    var el = document.querySelector('.modal');
+    var el = document.querySelector('#account-modal');
     modal = M.Modal.init(el);
+    var delel = document.querySelector('#delete-modal');
+    delmodal = M.Modal.init(delel);
 });
