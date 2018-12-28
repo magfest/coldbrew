@@ -32,11 +32,11 @@ function pourDrink() {
                 } else {
                     mode = "failed";
                     refreshInterface();
-                    M.toast({html: data.error});
+                    M.toast({displayLength: 10000, html: data.error});
                 }
             }
             else {
-                M.toast({html: "Failed to request pour: Server returned "+this.status});
+                M.toast({displayLength: 10000, html: "Failed to request pour: Server returned "+this.status});
                 mode = "failed";
                 refreshInterface();
             }
@@ -66,6 +66,10 @@ function refreshInterface() {
         clearTimeout(interfaceTimer);
         current.innerHTML = "<h4>Please scan your badge...</h4>";
         icon.style.color = "grey";
+    } else if (mode === "unknown") {
+        clearTimeout(interfaceTimer);
+        current.innerHTML = "<div><div class='register'><h4>You Need To Register</h4></div><div class='register'><h4>https://coldbrew.magevent.net/</h4></div></div>";
+        interfaceTimer = setTimeout(resetMode, 5000);
     } else if (mode === "status") {
         current.innerHTML = "<div><div class='name'>"+account.name+"</div><div class='funds'>&#36;"+funds+"</div><div><i onclick='resetMode()' class='left large material-icons'>clear</i><i onclick='pourDrink()' class='right large material-icons'>send</i></div></div>";
         icon.style.color = "white";
@@ -92,9 +96,9 @@ function refreshInterface() {
         if (interfaceTimer) {
             clearTimeout(interfaceTimer);
         }
-        interfaceTimer = setTimeout(resetMode, 2000);
+        interfaceTimer = setTimeout(resetMode, 5000);
     } else if (mode === "secret") {
-        current.innerHTML = '<div><input id="hex" type="text"></div>';
+        current.innerHTML = '<div><h3>You Must Authorize This Terminal</h3><br><input id="hex" type="text"></div>';
         $('#hex').keyboard({
             layout: 'custom',
             customLayout: {
@@ -142,11 +146,16 @@ function lookupAttendee() {
                 mode = "status";
                 refreshInterface();
             } else {
-                M.toast({html: data.error});
+                if (data.type === "invalid") {
+                    M.toast({displayLength: 10000, html: "Failed to lookup account: " + data.error});
+                } else {
+                    mode = "unknown";
+                    refreshInterface();
+                }
             }
         }
         else {
-            M.toast({html: "Failed to lookup account: Server returned "+this.status});
+            M.toast({displayLength: 10000, html: "Failed to lookup account: Server returned "+this.status});
         }
     }
     if (barcode) {

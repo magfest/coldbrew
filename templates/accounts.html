@@ -8,6 +8,7 @@
                 <th>Badge</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Funding Source</th>
                 <th>Balance</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
                 <td>{{ account['badge'] }}</td>
                 <td>{{ account['name'] }}</td>
                 <td>{{ account['email'] }}</td>
+                <td>{{ account['payment_type']|title }}</td>
                 <td><a href="/activate/cash/{{ account['url'] }}">&#36;{{ '%.2f' | format(balances[account['id']]) }}</a></td>
             </tr>
         </tbody>

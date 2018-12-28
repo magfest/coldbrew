@@ -180,21 +180,25 @@ def api_accounts_create():
 def api_accounts_lookup():
     data = request.get_json(force=True)
     if not ('barcode' in data.keys() or 'id' in data.keys()):
-        return jsonify({"success": False, "error": "You must provide a barcode or an id to lookup."})
+        return jsonify({"success": False, "type": "invalid", "error": "You must provide a barcode or an id to lookup."})
     with Cursor() as cursor:
         if 'barcode' in data.keys():
             if data['barcode'] in barcode_cache.keys():
                 attendee = barcode_cache[data['barcode']]
             else:
-                attendee = uber.lookup(data['barcode'])
+                uberdata = uber.lookup(data['barcode'])
+                if "result" in uberdata.keys():
+                    attendee = uberdata["result"]
+                else:
+                    return jsonify({"success": False, "type": "invalid", "error": "Could not locate badge in Uber."})
                 barcode_cache[data['barcode']] = attendee
             if not attendee:
-                return jsonify({"success": False, "error": "Badge not found in Uber."})
+                return jsonify({"success": False, "type": "invalid", "error": "Badge not found in Uber."})
             badge = str(attendee["badge_num"])
             cursor.execute("SELECT * FROM accounts WHERE badge = %s", (badge,))
             account = cursor.fetchone()
             if not account:
-                return jsonify({"success": False, "error": "You do not have a TechOps Coldbrew account."})
+                return jsonify({"success": False, "type": "unknown", "error": "You do not have a TechOps Coldbrew account."})
             cursor.execute("SELECT amount FROM transactions WHERE account = %s", (account['id'],))
         else:
             cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['id'],))

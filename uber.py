@@ -14,5 +14,4 @@ def lookup (barcode):
         "params": [barcode,]
     }
     resp = requests.post(URL, json=data, headers=headers)
-    print(resp.text)
-    return resp.json()["result"]
+    return resp.json()
