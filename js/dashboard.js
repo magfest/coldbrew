@@ -1,4 +1,5 @@
 var barcode = "";
+var scanned_barcode = "";
 var barcodeTimer;
 var interfaceTimer;
 var account = {};
@@ -71,7 +72,7 @@ function refreshInterface() {
         current.innerHTML = "<div><div class='register'><h4>You Need To Register</h4></div><div class='register'><h4>https://coldbrew.magevent.net/</h4></div></div>";
         interfaceTimer = setTimeout(resetMode, 5000);
     } else if (mode === "status") {
-        current.innerHTML = "<div><div class='name'>"+account.name+"</div><div class='funds'>&#36;"+funds+"</div><div><i onclick='resetMode()' class='left large material-icons'>clear</i><i onclick='pourDrink()' class='right large material-icons'>send</i></div></div>";
+        current.innerHTML = "<div><div class='name'>"+account.name+"</div><div class='funds'>"+funds+"</div><div><i onclick='resetMode()' class='left large material-icons'>clear</i><i onclick='pourDrink()' class='right large material-icons'>send</i></div></div>";
         icon.style.color = "white";
         if (interfaceTimer) {
             clearTimeout(interfaceTimer);
@@ -158,12 +159,7 @@ function lookupAttendee() {
             M.toast({displayLength: 10000, html: "Failed to lookup account: Server returned "+this.status});
         }
     }
-    if (barcode) {
-        xhr.send(JSON.stringify({barcode: barcode}));
-    }
-    else if (account.id) {
-        xhr.send(JSON.stringify({id: account.id}));
-    }
+    xhr.send(JSON.stringify({barcode: scanned_barcode}));
 }
 
 function handleBarcode(evt) {
@@ -179,6 +175,7 @@ function handleBarcode(evt) {
         }
     }
     if (barcode.length == 7) {
+        scanned_barcode = barcode;
         lookupAttendee();
         barcode = "";
     }

@@ -56,6 +56,7 @@ function confirm_delete() {
             var data = JSON.parse(this.responseText);
             if (data.success) {
                 delmodal.close();
+                M.toast({html: "Account deleted successfully."})
                 location.reload();
             } else {
                 M.toast({html: data.error});
@@ -65,14 +66,7 @@ function confirm_delete() {
             M.toast({html: "Failed to delete account: Server returned "+this.status});
         }
     }
-    var formEl = document.getElementById("deleteform");
-    var formdata = new FormData(formEl);
-    var reqdata = {};
-    formdata.forEach(function(value, key) {
-        reqdata[key] = value;
-    });
-    reqdata['account'] = to_delete.id;
-    xhr.send(JSON.stringify(reqdata));
+    xhr.send(JSON.stringify({managed_account: to_delete.id}));
 }
 
 document.addEventListener('DOMContentLoaded', function() {

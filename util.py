@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from flask import request, render_template, make_response
+from flask import request, render_template, make_response, g
 from passlib.hash import pbkdf2_sha256
 from functools import wraps
 import uuid
@@ -26,16 +26,21 @@ def get_transactions(account=None):
         if account:
             cursor.execute("SELECT * FROM accounts WHERE id = %s", (account,))
             account = cursor.fetchone()
-            cursor.execute("SELECT transactions.id, transactions.amount, accounts.badge, accounts.name, accounts.email, transactions.note, transactions.timestamp FROM transactions LEFT JOIN accounts ON transactions.account = accounts.id WHERE transactions.account = %s ORDER BY transactions.timestamp", (account['id'],))
+            cursor.execute("SELECT transactions.id, transactions.amount, accounts.id as 'account', accounts.badge, accounts.name, accounts.email, transactions.note, transactions.timestamp FROM transactions LEFT JOIN accounts ON transactions.account = accounts.id WHERE transactions.account = %s ORDER BY transactions.timestamp", (account['id'],))
         else:
-            cursor.execute("SELECT transactions.id, transactions.amount, accounts.badge, accounts.name, accounts.email, transactions.note, transactions.timestamp FROM transactions LEFT JOIN accounts ON transactions.account = accounts.id ORDER BY transactions.timestamp")
+            cursor.execute("SELECT transactions.id, transactions.amount, accounts.id as 'account', accounts.badge, accounts.name, accounts.email, transactions.note, transactions.timestamp FROM transactions LEFT JOIN accounts ON transactions.account = accounts.id ORDER BY transactions.timestamp")
         transactions = cursor.fetchall()
-        total = 0
+        total = {}
         for transaction in transactions:
-            total += transaction['amount']
+            if not transaction['account'] in total.keys():
+                total[transaction['account']] = 0
+            total[transaction['account']] += transaction['amount']
             transaction['amount'] = format_dollars(transaction['amount'])
-            transaction['total'] = format_dollars(total)
-    return transactions, format_dollars(total)
+            transaction['total'] = format_dollars(total[transaction['account']])
+        grand_total = None
+        if transactions:
+            grand_total = format_dollars(total[transactions[0]['account']]) 
+    return transactions, grand_total
 
 def check_session():
     account = request.cookies.get('account')
@@ -45,10 +50,17 @@ def check_session():
         sessions = cursor.fetchall()
         cursor.execute("DELETE FROM sessions WHERE sessionkey = %s AND account = %s", (session, account))
         for session in sessions:
-            if datetime.strptime(session['expiration'], '%Y-%m-%d %H-%M-%S') > datetime.now():
-                cursor.execute("INSERT INTO sessions (account, sessionkey, expiration) VALUES (%s, %s, %s)", (account, session, (datetime.now()+timedelta(hours=24)).strftime('%Y-%m-%d %H-%M-%S')))
+            if session['expiration'] > datetime.now():
+                cursor.execute("INSERT INTO sessions (account, sessionkey, expiration) VALUES (%s, %s, %s)", (account, session['sessionkey'], (datetime.now()+timedelta(hours=24)).strftime('%Y-%m-%d %H-%M-%S')))
                 return True
     return False
+
+def clear_session():
+    if check_session():
+        with Cursor() as cursor:
+            account = request.cookies.get('account')
+            session = request.cookies.get('session')
+            cursor.execute("DELETE FROM sessions WHERE sessionkey = %s AND account = %s", (session, account))
 
 def get_account():
     account = request.cookies.get('account')
@@ -88,30 +100,45 @@ def get_current_user_role():
     return 'anonymous', cookies
 
 def login():
-    print("Showing login")
     return render_template('login.html')
 
 def logout():
-    return render_template('logout.html')
+    g.logged_in = False
+    response = make_response(render_template('logout.html'))
+    response.set_cookie("session".encode('UTF-8'), bytes(), expires=0)
+    response.set_cookie("account".encode('UTF-8'), bytes(), expires=0)
+    clear_session()
+    return response
 
 def permission_error():
     return render_template('403.html')
+
+def logged_in():
+    if not 'logged_in' in g:
+        g.logged_in = check_session()
+    return g.logged_in
+
+def is_admin():
+    if not 'is_admin' in g:
+        role, cookies = get_current_user_role()
+        g.is_admin = role == 'admin'
+    return g.is_admin
 
 def requires_roles(*roles):
     def wrapper(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
-            print("Checking for roles")
             role, cookies = get_current_user_role()
             if role not in roles:
                 if role == 'anonymous':
-                    print("You are anonymous")
+                    g.logged_in = False
                     return login()
-                print("You are unauthorized")
+                g.logged_in = False
                 return permission_error()
-            print("You are authorized")
+            g.logged_in = True
+            if role == 'anonymous':
+                g.logged_in = False
             response = make_response(f(*args, **kwargs))
-            print(response)
             for cookie in cookies:
                 response.set_cookie(*cookie)
             return response

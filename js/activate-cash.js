@@ -1,6 +1,6 @@
 function add_cash() {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/accounts/activate", true);
+    xhr.open("POST", "/api/accounts/activate/cash", true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function() {
         if (this.readyState != 4) {
@@ -9,7 +9,8 @@ function add_cash() {
         if (this.status == 200) {
             var data = JSON.parse(this.responseText);
             if (data.success) {
-                window.location.href = "/accounts";
+                window.location.href = "/";
+                M.toast({html: "Funds added successfully."});
             } else {
                 M.toast({html: data.error});
             }

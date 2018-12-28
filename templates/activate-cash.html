@@ -1,30 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-    <h4>Add Cash Payment From {{ account['name'] }}</h4>
+    <h4>Add Cash Payment From {{ managed_account['name'] }}</h4>
     <p>Only an admin may use this form to add a cash transaction to this account.</p>
     <br>
     <div class="row">
         <form id="cashform">
             <div class="row">
                 <div class="input-field">
-                    <input placeholder="Authorized User" name="username" id="username" type="text">
-                    <label for="username">Authorized User</label>
+                    <input placeholder="10" name="amount" id="amount" type="number">
+                    <label for="amount">Amount (in dollars)</label>
                 </div>
             </div>
-            <div class="row">
-                <div class="input-field">
-                    <input placeholder="" name="password" id="password" type="password">
-                    <label for="password">Authorized Password</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field">
-                    <input placeholder="1000" name="amount" id="amount" type="number">
-                    <label for="amount">Amount (in cents)</label>
-                </div>
-            </div>
-            <input type="hidden" value="{{ account['id'] }}" name="account">
-            <input type="hidden" value="cash" name="payment_type">
+            <input type="hidden" value="{{ managed_account['id'] }}" name="managed_account">
         </form>
         <button class="btn waves-effect waves-light" onclick="add_cash()">Submit
             <i class="material-icons right">send</i>

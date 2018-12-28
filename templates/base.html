@@ -14,15 +14,33 @@
                     <i style="font-size: 50px" class="material-icons">local_drink</i>
                 </a>
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="/accounts">Accounts</a></li>
+                    {% if is_admin() %}
                     <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/accounts">Accounts</a></li>
                     <li><a href="/transactions">Transactions</a></li>
+                    {% endif %}
+                    {% if logged_in() %}
+                    <li><a href="/accounts/{{ account['url'] }}">Account</a></li>
+                    <li><a href="/activate/stripe/{{ account['url'] }}">Add Credit</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                    {% else %}
+                    <li><a href="/login">Login</a></li>
+                    {% endif %}
                 </ul>
             
                 <ul id="nav-mobile" class="sidenav">
-                    <li><a href="/accounts">Accounts</a></li>
-                    <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="/transactions">Transactions</a></li>
+                        {% if is_admin() %}
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/accounts">Accounts</a></li>
+                        <li><a href="/transactions">Transactions</a></li>
+                        {% endif %}
+                        {% if logged_in() %}
+                        <li><a href="/accounts/{{ account['url'] }}">Account</a></li>
+                        <li><a href="/activate/stripe/{{ account['url'] }}">Add Credit</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                        {% else %}
+                        <li><a href="/login">Login</a></li>
+                        {% endif %}
                 </ul>
                 <a href="#" data-target="nav-mobile" class="right sidenav-trigger">
                     <i style="font-size: 50px" class="material-icons">menu</i>

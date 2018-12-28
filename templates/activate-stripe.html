@@ -27,7 +27,28 @@
 {% endblock %}
 
 {% block content %}
-<h4>Connect {{ account['name'] }} to Stripe</h4>
+{% if managed_account['stripe_id'] %}
+<h4>Edit Spending Cap For {{ managed_account['name'] }}</h4>
+<p>You have already linked your credit card to your coldbrew account. If you would like to add more funds you may use this form to add to your existing spending cap.</p>
+<p>You have {{ format_dollars(get_balance(managed_account['id'])) }} remaining.</p>
+<br>
+<div class="row">
+    <form id="payment-form">
+        <div class="row">
+            <div class="input-field">
+                <input placeholder="10" name="amount" id="amount" type="number">
+                <label for="amount">Additional Spending Cap (in dollars)</label>
+            </div>
+        </div>
+        <input type="hidden" value="{{ managed_account['id'] }}" name="managed_account">
+    </form>
+
+    <button class="btn waves-effect waves-light" onclick="update_payment()">Submit
+        <i class="material-icons right">send</i>
+    </button>
+</div>
+{% else %}
+<h4>Connect {{ managed_account['name'] }} to Stripe</h4>
 <p>This form will allow you to link your credit card to your coldbrew account. The system will not allow you to be charged more than the spending cap you provide.</p>
 <p>Additionally, you will only be billed for your actual usage in a single transaction after MAGFest. Your payment information is securely held by Stripe Inc, and does not touch our server. The source code of this form is available here: <a href="https://github.com/magfest/coldbrew/blob/master/js/activate-stripe.js">ColdBrew</a></a></p>
 <br>
@@ -40,24 +61,21 @@
         </div>
         <div class="row">
             <div class="input-field">
-                <input placeholder="1000" name="amount" id="amount" type="number">
-                <label for="amount">Spending Cap (in cents)</label>
+                <input placeholder="10" name="amount" id="amount" type="number">
+                <label for="amount">Spending Cap (in dollars)</label>
             </div>
         </div>
-        <div class="row">
-                <div class="input-field">
-                    <input placeholder="" name="password" id="password" type="password">
-                    <label for="password">Password</label>
-                </div>
-            </div>
-        <input type="hidden" value="{{ account['id'] }}" name="account">
-        <input type="hidden" value="stripe" name="payment_type">
+        <input type="hidden" value="{{ managed_account['id'] }}" name="managed_account">
     </form>
+
     <button class="btn waves-effect waves-light" onclick="activate_payment()">Submit
         <i class="material-icons right">send</i>
     </button>
+</div>
+{% endif %}
 <script>
 var apikey = "{{ public_stripe_key }}";
+var stripe_id = "{{ managed_account['stripe_id'] }}";
 </script>
 {% endblock %}
 {% block includes %}
