@@ -1,14 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
-    <h3>{{ account['name'] }}</h3>
-    <ul>
-        <li>Balance: {{ total }}</li>
-        <li>Email Address: {{ account['email'] }}</li>
-        <li>Funding Source: {{ account['payment_type'] }}</li>
-        <li>Badge Number: {{ account['badge'] }}</li>
-    </ul>
+    <div class="row">    
+    <div class="col"><h3>{{ account['name']|title }}</h3></div>
+    <div class="col right"><h3>Balance: {{ total }}</h3></div>
+    </div>
+    <div class="card">
+    <div class="card-content">
+    <span class="card-title">Details</span>
+    <table>
+      <tbody>
+        <tr><td><i class="material-icons">email</i></td><td>Email Address</td><td>{{ account['email'] }}</td></tr>
+        <tr><td><i class="material-icons">attach_money</i></td><td>Funding Source</td><td>{{ account['payment_type'] }}</td></tr>
+        <tr><td><i class="material-icons">ballot</i></td><td>Badge Number</td><td>{{ account['badge'] }}</td></tr>
+        <tr><td><i class="material-icons">credit_card</i></td><td>Credit Card Associated</td><td>{{ "Yes" if account['stripe_id'] else "No" }}</td></tr>
+      <tbody>
+    </table>
+    </div>
+    </div>
 
-    <h4>Transactions</h4>
+    <div class="card">
+    <div class="card-content">
+    <span class="card-title">Transactions</span>
     {% if transactions %}
     <table>
         <thead>
@@ -18,6 +30,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Amount</th>
+                <th>Balance</th>
                 <th>Note</th>
                 <th>Timestamp</th>
             </tr>
@@ -30,6 +43,7 @@
                 <td>{{ transaction.name }}</td>
                 <td>{{ transaction.email }}</td>
                 <td>{{ transaction.amount }}</td>
+                <td>{{ transaction.total }}</td>
                 <td>{{ transaction.note }}</td>
                 <td>{{ transaction.timestamp }}</td>
             </tr>
@@ -39,4 +53,6 @@
     {% else %}
     <p>No transactions have been committed.</p>
     {% endif %}
+    </div>
+    </div>
 {% endblock %}

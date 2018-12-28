@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
+    <h3>Transactions</h3>
+    <br>
     {% if transactions %}
     <table>
         <thead>
@@ -30,6 +32,6 @@
         </tbody>
     </table>
     {% else %}
-    <h1>No transactions have been committed.</h1>
+    <h4>No transactions have been committed.</h4>
     {% endif %}
 {% endblock %}

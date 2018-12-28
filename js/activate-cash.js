@@ -9,7 +9,7 @@ function add_cash() {
         if (this.status == 200) {
             var data = JSON.parse(this.responseText);
             if (data.success) {
-                window.location.href = "/";
+                window.location.href = "/accounts";
                 M.toast({html: "Funds added successfully."});
             } else {
                 M.toast({html: data.error});

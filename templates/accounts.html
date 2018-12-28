@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
     {% if accounts %}
+    <h3>Accounts</h3>
+    <br>
     <table>
         <thead>
             <tr>
@@ -28,7 +30,7 @@
         {% endfor %}
     </table>
     {% else %}
-    <h1>No accounts available</h1>
+    <h4>No accounts available</h4>
     {% endif %}
     <div class="fixed-action-btn">
         <a class="btn-floating btn-large red" onclick="open_modal()">
