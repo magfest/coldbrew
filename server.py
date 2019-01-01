@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from flask import Flask, render_template, jsonify, send_from_directory, request, redirect
+from flask_socketio import SocketIO, emit
 import datetime
 import time
 import uuid
@@ -12,6 +13,7 @@ import emailsender
 import uber
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 payments.initialize_plan()
 
 barcode_cache = {}
@@ -92,4 +94,4 @@ def send_js(path):
 import api
 
 if __name__ == "__main__":
-    app.run()
+    socketio.run(app)
