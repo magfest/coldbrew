@@ -8,6 +8,60 @@ var secretkey = "";
 var mode = "scanning"
 var current = document.querySelector(".current");
 var icon = document.querySelector(".icon");
+var lasttapstate = false;
+
+function checkTapState() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/api/tapstate", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+        if (this.readyState != 4) {
+            return;
+        }
+        setTimeout(checkTapState, 250);
+        if (this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            var active = false;
+            data.forEach(tap => {
+                if (tap.state === 1) {
+                    active = true;
+                }
+            });
+            if (active & !lasttapstate) {
+                lasttapstate = true;
+                if (mode === "prepour") {
+                    mode = "pouring";
+                    refreshInterface();
+                } else if (mode === "pouring") {
+
+                } else {
+                    mode = "alarm";
+                    refreshInterface();
+                    var report = new XMLHttpRequest();
+                    report.open("POST", "/api/report", true);
+                    report.setRequestHeader("Content-Type", "application/json");
+                    report.send();
+                }
+            } else if (!active & lasttapstate) {
+                lasttapstate = false;
+                if (mode === "alarm") {
+                    mode = "scanning";
+                    if (interfaceTimer) {
+                        clearTimeout(interfaceTimer);
+                    }
+                    interfaceTimer = setTimeout(resetMode, 2000);
+                } else if (mode === "pouring") {
+                    lookupAttendee(scanned_barcode);
+                }
+            }
+        } else {
+            M.toast({displayLength: 10000, html: "Failed to request tapstate: Server returned "+this.status});
+        }
+    }
+    xhr.send();
+}
+
+setTimeout(checkTapState, 250);
 
 function clearBarcode() {
     console.log("Clearing barcode");
@@ -28,7 +82,7 @@ function pourDrink() {
                 var data = JSON.parse(this.responseText);
                 if (data.success) {
                     console.log("Poured Drink Successfully!");
-                    mode = "pouring";
+                    mode = "prepour";
                     refreshInterface();
                 } else {
                     mode = "failed";
@@ -52,7 +106,7 @@ function resetMode() {
     if (mode === "pouring") {
         mode = "status";
     } else if (mode === "poured") {
-        lookupAttendee(barcode);
+        lookupAttendee(scanned_barcode);
         return;
     } else {
         account = {};
@@ -66,6 +120,7 @@ function refreshInterface() {
     if (mode === "scanning") {
         clearTimeout(interfaceTimer);
         current.innerHTML = "<h4>Please scan your badge...</h4>";
+        document.body.style.backgroundColor = "black";
         icon.style.color = "grey";
     } else if (mode === "unknown") {
         clearTimeout(interfaceTimer);
@@ -86,6 +141,21 @@ function refreshInterface() {
             clearTimeout(interfaceTimer);
         }
         interfaceTimer = setTimeout(resetMode, 5000);
+    } else if (mode === "alarm") {
+        current.innerHTML = "<h3>UNPAID DRINK!</h3>";
+        icon.style.color = "yellow";
+        document.body.style.backgroundColor = "red";
+        if (interfaceTimer) {
+            clearTimeout(interfaceTimer);
+        }
+        interfaceTimer = setTimeout(resetMode, 15000);
+    } else if (mode === "prepour") {
+        current.innerHTML = "<h3>You May Pour A Drink!</h3>";
+        icon.style.color = "green";
+        if (interfaceTimer) {
+            clearTimeout(interfaceTimer);
+        }
+        interfaceTimer = setTimeout(resetMode, 15000);
     } else if (mode === "loading") {
         current.innerHTML = "<h3>Please Wait...</h3>";
         if (interfaceTimer) {

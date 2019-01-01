@@ -9,9 +9,6 @@ import payments
 import slack
 import uber
 
-print("Imported API")
-print(app)
-
 @app.route("/api/logout")
 @requires_roles('admin', 'user')
 def api_logout():
@@ -41,6 +38,7 @@ def api_accounts_activate_cash():
             cursor.execute("UPDATE accounts SET payment_type = %s WHERE id = %s", ("cash", managed_account['id']))
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (managed_account['id'], data['amount'], "Cash Transaction", timestamp))
+    slack.postText("Added {} to {} using cash.".format(format_dollars(data['amount']), managed_account['name']))
     return jsonify({"success": True})
 
 @app.route("/api/accounts/activate/stripe", methods=['POST'])
@@ -64,6 +62,7 @@ def api_accounts_activate_stripe():
             cursor.execute("UPDATE accounts SET stripe_id = %s WHERE id = %s", (stripe_id, managed_account['id']))
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (managed_account['id'], data['amount'], "Stripe Transaction", timestamp))
+    slack.postText("Added {} to {} using stripe.".format(format_dollars(data['amount']), managed_account['name']))
     return jsonify({"success": True})
 
 @app.route("/api/accounts/create", methods=['POST'])
@@ -95,6 +94,7 @@ def api_accounts_create():
             cursor.execute("SELECT * FROM accounts WHERE badge = %s", (data['badge'],))
             account = cursor.fetchone()
             emailsender.welcome(account)
+            slack.postText("Created new account {}".format(account['name']))
             return jsonify({"success": True, "account": account})
         else:
             return jsonify({"success": False, "error": "An unknown database error occurred."})
@@ -106,8 +106,11 @@ def api_accounts_delete():
     with Cursor() as cursor:
         if get_balance(data['managed_account']):
             return jsonify({"success": False, "error": "You cannot delete accounts that currently have a balance."})
+        cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['managed_account'],))
+        account = cursor.fetchone()
         cursor.execute("DELETE FROM accounts WHERE id = %s", (data['managed_account'],))
         cursor.execute("DELETE FROM transactions WHERE account = %s", (data['managed_account'],))
+    slack.postText("Deleted account {}".format(account['name']))
     return jsonify({"success": True})
 
 @app.route("/api/accounts/lookup", methods=['POST'])
@@ -156,7 +159,18 @@ def api_pour():
 
 @app.route("/api/tapstate", methods=['GET', 'POST'])
 def api_tapstate():
-    data = request.get_json(force=True)
-    print("Pin {} went {}".format(data["pin"], "high" if data["state"] else "low"))
-    emit("pin_update", data, broadcast=True)
+    if request.method == 'POST':
+        data = request.get_json(force=True)
+        with Cursor() as cursor:
+            cursor.execute("INSERT INTO tapstate (tap, state, timestamp) VALUES (%s, %s, %s)", (str(data['pin']), bool(data['state']), datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+        return jsonify({"success": True})
+    elif request.method == 'GET':
+        with Cursor() as cursor:
+            cursor.execute("SELECT * FROM tapstate WHERE id IN (SELECT MAX(id) FROM tapstate GROUP BY tap)")
+            tapstate = cursor.fetchall()
+        return jsonify(tapstate)
+
+@app.route("/api/report", methods=['POST'])
+def api_report():
+    slack.postText("Drink reported stolen!")
     return jsonify({"success": True})

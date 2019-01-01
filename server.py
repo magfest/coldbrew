@@ -4,17 +4,18 @@ import datetime
 import time
 import uuid
 
+app = Flask(__name__)
+
 from util import *
 from database import Cursor
-import socketserver
+import tapserver
 import payments
 import secrets
 import emailsender
 import slack
 import uber
+import api
 
-app = Flask(__name__)
-socketserver.start()
 payments.initialize_plan()
 
 @app.context_processor
