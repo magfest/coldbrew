@@ -13,7 +13,7 @@ import emailsender
 import uber
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, path="ws")
 payments.initialize_plan()
 
 barcode_cache = {}
