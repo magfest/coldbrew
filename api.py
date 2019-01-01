@@ -5,6 +5,7 @@ from server import app
 from util import *
 import emailsender
 import payments
+import slack
 import uber
 
 @app.route("/api/logout")
@@ -146,6 +147,7 @@ def api_pour():
             if not payments.bill_coldbrew(account):
                 return jsonify({"success": False, "error": "Failed to authorize transaction with Stripe."})
         cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (str(data['account']), str(data['amount']), data['note'], timestamp))
+        slack.poured()
         return jsonify({"success": True})
 
 @app.route("/api/tapstate", methods=['GET', 'POST'])

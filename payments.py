@@ -1,3 +1,4 @@
+import time
 import stripe
 import secrets
 
@@ -47,7 +48,7 @@ def create_customer(account, token):
 def bill_coldbrew(account):
     stripe.UsageRecord.create(
         quantity=1,
-        timestamp=time.time(),
+        timestamp=int(time.time()),
         subscription_item=account['stripe_id'],
         action='increment'
     )

@@ -18,7 +18,7 @@ cursor.execute("CREATE TABLE IF NOT EXISTS sessions (id INT(6) UNSIGNED AUTO_INC
 cursor.execute("SELECT * FROM accounts WHERE name = 'bitbyt3r'")
 accounts = cursor.fetchall()
 if not accounts:
-    cursor.execute("INSERT INTO accounts (url, badge, name, email, password) VALUES (%s, %s, %s, %s)", (*secrets.DEFAULT_ADMIN,))
+    cursor.execute("INSERT INTO accounts (url, badge, name, email, password) VALUES (%s, %s, %s, %s, %s)", (*secrets.DEFAULT_ADMIN,))
 
 cursor.close()
 db.commit()
