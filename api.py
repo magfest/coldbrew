@@ -147,3 +147,8 @@ def api_pour():
                 return jsonify({"success": False, "error": "Failed to authorize transaction with Stripe."})
         cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (str(data['account']), str(data['amount']), data['note'], timestamp))
         return jsonify({"success": True})
+
+@app.route("/api/tapstate", methods=['GET', 'POST'])
+def api_tapstate():
+    data = request.get_json(force=True)
+    print("Pin {} went {}".format(data["pin"], "high" if data["state"] else "low"))
