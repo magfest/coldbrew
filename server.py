@@ -13,8 +13,9 @@ import emailsender
 import uber
 
 app = Flask(__name__)
-socketio = SocketIO(app, path="ws")
 payments.initialize_plan()
+import api
+socketio = SocketIO(app)
 
 barcode_cache = {}
 
@@ -90,8 +91,6 @@ def activate_stripe(path):
 @app.route("/js/<path:path>")
 def send_js(path):
     return send_from_directory("js", path)
-
-import api
 
 if __name__ == "__main__":
     socketio.run(app)

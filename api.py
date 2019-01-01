@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, send_from_directory, request
+from flask_socketio import send, emit
 from datetime import datetime
 
 from server import app
@@ -7,6 +8,9 @@ import emailsender
 import payments
 import slack
 import uber
+
+print("Imported API")
+print(app)
 
 @app.route("/api/logout")
 @requires_roles('admin', 'user')
@@ -154,4 +158,5 @@ def api_pour():
 def api_tapstate():
     data = request.get_json(force=True)
     print("Pin {} went {}".format(data["pin"], "high" if data["state"] else "low"))
+    emit("pin_update", data, broadcast=True)
     return jsonify({"success": True})
