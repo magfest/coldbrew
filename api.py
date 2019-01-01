@@ -154,3 +154,4 @@ def api_pour():
 def api_tapstate():
     data = request.get_json(force=True)
     print("Pin {} went {}".format(data["pin"], "high" if data["state"] else "low"))
+    return jsonify({"success": True})
