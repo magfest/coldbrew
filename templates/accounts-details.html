@@ -12,7 +12,7 @@
         <tr><td><i class="material-icons">email</i></td><td>Email Address</td><td>{{ account['email'] }}</td></tr>
         <tr><td><i class="material-icons">attach_money</i></td><td>Funding Source</td><td>{{ account['payment_type'] }}</td></tr>
         <tr><td><i class="material-icons">ballot</i></td><td>Badge Number</td><td>{{ account['badge'] }}</td></tr>
-        <tr><td><i class="material-icons"></i></td><td>Alt Barcode</td><td>{{ account['volunteer_barcode'] }}</td></tr>
+        <tr><td><i class="material-icons">format_align_left</i></td><td>Alt Barcode</td><td>{{ account['volunteer_barcode'] }}</td></tr>
         <tr><td><i class="material-icons">credit_card</i></td><td>Credit Card Associated</td><td>{{ "Yes" if account['stripe_id'] else "No" }}</td></tr>
       <tbody>
     </table>
