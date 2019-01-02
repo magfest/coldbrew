@@ -242,6 +242,10 @@ function handleBarcode(evt) {
             barcode = "~";
         } else if (barcode[0] === "~") {
             barcode = barcode + evt.key;
+        } else if (evt.key === "^") {
+            barcode = "^";
+        } else if (barcode[0] === "^") {
+            barcode = barcode + evt.key;
         }
     }
     if (barcode.length == 7) {

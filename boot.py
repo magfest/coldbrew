@@ -11,7 +11,7 @@ wlan = network.WLAN(network.STA_IF)
 ap = network.WLAN(network.AP_IF)
 ap.active(False)
 wlan.active(True)
-wlan.connect('Hackafe', 'correcthorsebatterystaple')
+wlan.connect('linksys wrt54g', 'welcometo2000')
 for i in range(1000):
     if wlan.isconnected():
         break

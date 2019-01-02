@@ -12,6 +12,7 @@
                 <th>Email</th>
                 <th>Funding Source</th>
                 <th>Balance</th>
+                <th>Alt Barcode</th>
                 <th>Delete</th>
             </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ account['email'] }}</td>
                 <td>{{ account['payment_type']|title }}</td>
                 <td><a href="/activate/cash/{{ account['url'] }}">{{ balances[account['id']] }}</a></td>
+                <td>{{ account['volunteer_barcode'] }}</td>
                 <td onclick="delete_account('{{ account['name'] }}', {{ account['id'] }})")><button class="waves-effect waves-light btn red">Delete</button></td>
             </tr>
         </tbody>
