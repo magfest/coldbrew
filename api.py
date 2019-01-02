@@ -88,7 +88,7 @@ def api_accounts_create():
         if cursor.fetchall():
             return jsonify({"success": False, "error": "An account already exists for this name."})
         url = str(uuid.uuid4())
-        barcode = "^" + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
+        barcode = "^" + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         cursor.execute("INSERT INTO accounts (badge, name, email, password, url, volunteer_barcode) VALUES (%s, %s, %s, %s, %s, %s)", (data['badge'], data['name'], data['email'], password_hash, url, barcode))
         if cursor.rowcount == 1:
             cursor.execute("SELECT * FROM accounts WHERE badge = %s", (data['badge'],))
