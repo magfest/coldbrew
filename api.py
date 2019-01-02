@@ -122,7 +122,7 @@ def api_accounts_lookup():
         found = True
         if not "result" in uberdata.keys():
             found = False
-        if not uberdata["result"]:
+        elif not uberdata["result"]:
             found = False
         if not found:
             cursor.execute("SELECT * FROM accounts where volunteer_barcode = %s", (data['barcode'],))
