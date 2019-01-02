@@ -163,6 +163,8 @@ def api_tapstate():
         data = request.get_json(force=True)
         with Cursor() as cursor:
             cursor.execute("INSERT INTO tapstate (tap, state, timestamp) VALUES (%s, %s, %s)", (str(data['pin']), bool(data['state']), datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+        if data['state']:
+            slack.postText("Drink poured from tap #{}".format(data['pin']))
         return jsonify({"success": True})
     elif request.method == 'GET':
         with Cursor() as cursor:
