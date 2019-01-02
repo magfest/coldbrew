@@ -3,7 +3,6 @@ from datetime import datetime
 
 from server import app
 from util import *
-from socketserver import tapstate
 import emailsender
 import payments
 import random
