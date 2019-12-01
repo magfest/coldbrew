@@ -134,7 +134,7 @@ def api_accounts_lookup():
             cursor.execute("SELECT * FROM accounts WHERE badge = %s", (badge,))
             account = cursor.fetchone()
         if not account:
-            return jsonify({"success": False, "type": "unknown", "error": "You do not have a TechOps Coldbrew account."})
+            return jsonify({"success": False, "type": "unknown", "error": "You do not have a Coldbrew account."})
         funds = format_dollars(get_balance(account['id']))
     return jsonify({"success": True, "funds": funds, "account": account})
 
