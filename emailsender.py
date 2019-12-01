@@ -8,7 +8,7 @@ def welcome(account):
     server.login(secrets.EMAIL_USER, secrets.EMAIL_PASS)
     body = """Dear {name},
 
-Thanks for making a TechOps Nitro Coldbrew account!
+Thanks for making a Nitro Coldbrew account!
 
 8oz pours of coldbrew coffee are $2 each, and you'll be charged for your total consumption after the event. If you'd like to pay in cash (we prefer you don't, though, as it's a hassle), please talk to Robert Scullin (@rscullin on Slack) or Mark Murnane (@bitbyt3r on Slack).
 
@@ -22,7 +22,7 @@ Thanks, and enjoy!
     """.format(name=account['name'], url=account['url'])
     msg = EmailMessage()
     msg.set_content(body)
-    msg['Subject'] = "TechOps Nitro Coldbrew"
+    msg['Subject'] = "Nitro Coldbrew"
     msg['From'] = secrets.EMAIL_FROM
     msg['To'] = account['email']
     server.send_message(msg)
