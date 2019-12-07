@@ -16,6 +16,9 @@ for i in [
     "ADMINS",
 ]:
     if i in os.environ:
-        vars()[i] = json.loads(os.environ[i])
+        if i in ["ADMINS", "DEFAULT_ADMIN"]:
+            vars()[i] = json.loads(os.environ[i])
+        else:
+            vars()[i] = os.environ[i]
     else:
         print(f"You must provide the environment variable {i} to start coldbrew-dashboard.")
