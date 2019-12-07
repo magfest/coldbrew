@@ -1,0 +1,26 @@
+{
+    "addons": [
+      "heroku-postgresql",
+      "timber-logging"
+    ],
+    "buildpacks": [
+      {
+        "url": "heroku/python"
+      }
+    ],
+    "env": {
+    },
+    "formation": {
+      "web": {
+        "quantity": 1
+      }
+    },
+    "name": "coldbrew",
+    "scripts": {
+    },
+    "description": "Coldbrew payment and consumption tracking dashboard.",
+    "repository": "https://github.com/magfest/coldbrew",
+    "keywords": ["vue", "flask", "python", "coffee management"],
+    "stack": "heroku-18"
+  }
+  
