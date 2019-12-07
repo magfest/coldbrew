@@ -8,11 +8,11 @@ app = Flask(__name__)
 
 from util import *
 from database import Cursor
-import tapserver
 import payments
 import secrets
 import emailsender
-import slack
+import slackimport tapserver
+
 import uber
 import api
 

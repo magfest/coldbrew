@@ -3,10 +3,10 @@ import mysql.connector
 import secrets
 
 db = mysql.connector.connect(
-    host="localhost",
-    user="coldbrew",
-    passwd="coldbrew",
-    database="coldbrew",
+    host=secrets.DB_HOST,
+    user=secrets.DB_USER,
+    passwd=secrets.DB_PASS,
+    database=secrets.DB_BASE,
     autocommit=True
 )
 
@@ -28,10 +28,10 @@ db.close()
 @contextmanager
 def Cursor():
     db = mysql.connector.connect(
-            host="localhost",
-            user="coldbrew",
-            passwd="coldbrew",
-            database="coldbrew"
+            host=secrets.DB_HOST,
+            user=secrets.DB_USER,
+            passwd=secrets.DB_PASS,
+            database=secrets.DB_BASE,
         )
     cursor = db.cursor(buffered=True, dictionary=True)
     try:

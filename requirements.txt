@@ -1,5 +1,5 @@
 flask
 requests
 gunicorn
-mysql
+mysql-connector-python
 passlib

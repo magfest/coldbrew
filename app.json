@@ -9,6 +9,52 @@
       }
     ],
     "env": {
+        "DASH_KEY": {
+            "description": "A shared key that allows dashboards to authorize pours.",
+            "generator": "secret"
+        },
+        "DB_HOST": {
+            "description": "The host of the database to connect with. Only tested with mysql."
+        },
+        "DB_USER": {
+            "description": "The user to connect to the database with."
+        },
+        "DB_PASS": {
+            "description": "The password to connect to the database."
+        },
+        "DB_BASE": {
+            "description": "The name of the database."
+        },
+        "DEFAULT_ADMIN": {
+            "description": "A json list of properties defining the default admin. [url, badge, name, email, password]"
+        },
+        "EMAIL_FROM": {
+            "description": "The email address to send emails from."
+        },
+        "EMAIL_USER": {
+            "description": "The user to send emails using."
+        },
+        "EMAIL_PASS": {
+            "description": "The password of the email user."
+        },
+        "STRIPE_KEY": {
+            "description": "The secret stripe key"
+        },
+        "PUBLIC_STRIPE_KEY": {
+            "description": "The public stripe key"
+        },
+        "SLACK_URL": {
+            "description": "Webhook used to post pours to slack"
+        },
+        "UBER_URL": {
+            "description": "URL of the uber server to query users from"
+        },
+        "UBER_KEY": {
+            "description": "The uber api key to use"
+        },
+        "ADMINS": {
+            "description": "A json list of users to be made admins"
+        }
     },
     "formation": {
       "web": {
@@ -23,4 +69,3 @@
     "keywords": ["vue", "flask", "python", "coffee management"],
     "stack": "heroku-18"
   }
-  
