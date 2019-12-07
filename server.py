@@ -11,7 +11,7 @@ from database import Cursor
 import payments
 import secrets
 import emailsender
-import slackimport
+import slack
 import uber
 import api
 
