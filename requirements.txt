@@ -3,5 +3,4 @@ requests
 gunicorn
 mysql-connector-python
 passlib
-smtplib
 stripe
