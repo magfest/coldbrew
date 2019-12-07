@@ -24,7 +24,7 @@ cursor.execute("CREATE TABLE IF NOT EXISTS accounts (id INT(6) UNSIGNED AUTO_INC
 cursor.execute("CREATE TABLE IF NOT EXISTS transactions (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, account INT(6) UNSIGNED, amount INT(6), note VARCHAR(255), timestamp TIMESTAMP)")
 cursor.execute("CREATE TABLE IF NOT EXISTS sessions (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, account INT(6) UNSIGNED, sessionkey VARCHAR(64), expiration TIMESTAMP)")
 cursor.execute("CREATE TABLE IF NOT EXISTS tapstate (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, tap int(6) UNSIGNED, state BOOLEAN, timestamp TIMESTAMP)")
-cursor.execute("SELECT * FROM accounts WHERE name = %s", (secrets.DEFAULT_ADMIN[2]))
+cursor.execute("SELECT * FROM accounts WHERE name = %s", (secrets.DEFAULT_ADMIN[2],))
 accounts = cursor.fetchall()
 if not accounts:
     cursor.execute("INSERT INTO accounts (url, badge, name, email, password) VALUES (%s, %s, %s, %s, %s)", (*secrets.DEFAULT_ADMIN,))
