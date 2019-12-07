@@ -2,11 +2,19 @@ from contextlib import contextmanager
 import mysql.connector
 import secrets
 
+url = secrets.DATABASE_URL
+middle = url.split("//")[1]
+db_user = middle.split(":")[0]
+db_pass = middle.split(":")[1].split("@")[0]
+db_host = middle.split("@")[1].split("/")[0]
+db_base = middle.split("/")[1].split("?")[0]
+
+
 db = mysql.connector.connect(
-    host=secrets.DB_HOST,
-    user=secrets.DB_USER,
-    passwd=secrets.DB_PASS,
-    database=secrets.DB_BASE,
+    host=db_host,
+    user=db_user,
+    passwd=db_pass,
+    database=db_base,
     autocommit=True
 )
 
@@ -28,10 +36,10 @@ db.close()
 @contextmanager
 def Cursor():
     db = mysql.connector.connect(
-            host=secrets.DB_HOST,
-            user=secrets.DB_USER,
-            passwd=secrets.DB_PASS,
-            database=secrets.DB_BASE,
+            host=db_host,
+            user=db_user,
+            passwd=db_pass,
+            database=db_base,
         )
     cursor = db.cursor(buffered=True, dictionary=True)
     try:

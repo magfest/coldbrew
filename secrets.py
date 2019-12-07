@@ -3,10 +3,7 @@ import os
 
 for i in [
     "DASH_KEY",
-    "DB_HOST",
-    "DB_USER",
-    "DB_PASS",
-    "DB_BASE",
+    "DATABASE_HOST",
     "DEFAULT_ADMIN",
     "EMAIL_FROM",
     "EMAIL_USER",
