@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import mysql.connector
 import secrets
 
-url = secrets.CLEARDB_DATABASE_URL
+url = secrets.DATABASE_URL
 middle = url.split("//")[1]
 db_user = middle.split(":")[0]
 db_pass = middle.split(":")[1].split("@")[0]

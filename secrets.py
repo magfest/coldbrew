@@ -3,7 +3,7 @@ import os
 
 for i in [
     "DASH_KEY",
-    "CLEARDB_DATABASE_URL",
+    "DATABASE_URL",
     "DEFAULT_ADMIN",
     "EMAIL_FROM",
     "EMAIL_USER",
