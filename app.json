@@ -13,9 +13,6 @@
             "description": "A shared key that allows dashboards to authorize pours.",
             "generator": "secret"
         },
-        "DATABASE_URL": {
-            "description": "Database url for a mysql server"
-        },
         "DEFAULT_ADMIN": {
             "description": "A json list of properties defining the default admin. [url, badge, name, email, password]"
         },
