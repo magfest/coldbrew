@@ -10,9 +10,11 @@ def welcome(account):
 
 Thanks for making a Nitro Coldbrew account!
 
-8oz pours of coldbrew coffee are $2 each, and you'll be charged for your total consumption after the event. If you'd like to pay in cash (we prefer you don't, though, as it's a hassle), please talk to Robert Scullin (@rscullin on Slack) or Mark Murnane (@bitbyt3r on Slack).
+8oz pours of coldbrew coffee are $2 each, and you'll be charged for your total consumption after the event.
 
-If you would like to link your credit card via Stripe, please visit https://coldbrew.magevent.net/activate/stripe/{url} while on Event Wifi or a MAG laptop. From that page, you can enter your CC info, as well as set an upper limit -- you won't be charged this value, but serves as a way of self-limiting yourself. After the event ends (or we run out), we'll charge you for what you actually consumed.
+To link your credit card to your coldbrew account please visit https://coldbrew.magevent.net/activate/stripe/{url}
+
+This page will let you set a spending cap for your account. You will only be billed for your total consumption. We will send an email after the event to confirm your total before your card is charged.
 
 Once you have added money to your account, you can use it by scanning your MAGFest badge at the kiosk, and pressing the 'accept' arrow for each pour. You can also check your balance at the kiosk by scanning your badge, and then pressing the 'exit' button.
 
