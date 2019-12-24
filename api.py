@@ -49,6 +49,8 @@ def api_accounts_activate_stripe():
     data = request.get_json(force=True)
     if int(data['amount']) + get_balance(data['managed_account']) < 0:
         return jsonify({"success": False, "error": "Your overall balance cannot go negative."})
+    if int(data['amount']) + get_balance(data['managem_account']) > 10000:
+        return jsonify({"success": False, "error": "Your overall balance cannot exceed $100."})
     data['amount'] = int(data['amount']) * 100
     with Cursor() as cursor:
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['managed_account'],))
