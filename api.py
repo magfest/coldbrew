@@ -198,7 +198,15 @@ def api_tapstate():
                 stolen = False
                 account = transaction['account']
             cursor.execute("INSERT INTO pours (tap, timestamp, account, stolen) VALUES(%s, %s, %s, %s)", (str(data['pin']), datetime.now().strftime('%Y-%m-%d %H:%M:%S'), account, stolen))
-            slack.postText("Drink poured from tap #{}".format(data['pin']))
+            if not stolen:
+                cursor.execute("SELECT * FROM accounts WHERE id = %s", (account,))
+                account = cursor.fetchone()
+                if account:
+                    slack.postText("Drink poured from tap #{} by {}".format(data['pin'], account['name']))
+                else:
+                    slack.postText("Drink poured from tap #{} by UNKNOWN ACCOUNT".format(data['pin']))
+            else:
+                slack.postText("Drink poured from tap #{} by A THIEF!!!".format(data['pin']))
         return jsonify({"success": True})
     elif request.method == 'GET':
         with Cursor() as cursor:
