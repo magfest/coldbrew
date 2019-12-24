@@ -190,6 +190,14 @@ def api_tapstate():
         with Cursor() as cursor:
             cursor.execute("INSERT INTO tapstate (tap, state, timestamp) VALUES (%s, %s, %s)", (str(data['pin']), bool(data['state']), datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
         if data['state']:
+            cursor.execute("SELECT account from transactions WHERE timestamp < (NOW() - INTERVAL 30 SECOND) and amount < 0 ORDER BY timestamp ASC LIMIT 1")
+            transaction = cursor.fetchone()
+            stolen = True
+            account = 0
+            if transaction:
+                stolen = False
+                account = transaction['account']
+            cursor.execute("INSERT INTO pours (tap, timestamp, account, stolen) VALUES(%s, %s, %s, %s)", (str(data['pin']), datetime.now().strftime('%Y-%m-%d %H:%M:%S'), account, stolen))
             slack.postText("Drink poured from tap #{}".format(data['pin']))
         return jsonify({"success": True})
     elif request.method == 'GET':
