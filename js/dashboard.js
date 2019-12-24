@@ -124,7 +124,7 @@ function refreshInterface() {
         icon.style.color = "grey";
     } else if (mode === "unknown") {
         clearTimeout(interfaceTimer);
-        current.innerHTML = "<div><div class='register'><h4>You Need To Register</h4></div><div class='register'><h4>https://coldbrew.magevent.net/</h4></div></div>";
+        current.innerHTML = "<div><div class='register'><h4>You Need To Register</h4></div><div class='register'><h4>You should receive an email with instructions shortly.</h4></div></div>";
         interfaceTimer = setTimeout(resetMode, 5000);
     } else if (mode === "status") {
         current.innerHTML = "<div><div class='name'>"+account.name+"</div><div class='funds'>"+funds+"</div><div><i onclick='resetMode()' class='left large material-icons'>clear</i><i onclick='pourDrink()' class='right large material-icons'>send</i></div></div>";

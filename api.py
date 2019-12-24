@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, send_from_directory, request
 from datetime import datetime
 
+from passlib.hash import pbkdf2_sha256
 from server import app
 from util import *
 import emailsender
@@ -66,10 +67,7 @@ def api_accounts_activate_stripe():
     slack.postText("Added {} to {} using stripe.".format(format_dollars(data['amount']), managed_account['name']))
     return jsonify({"success": True})
 
-@app.route("/api/accounts/create", methods=['POST'])
-@requires_roles('admin')
-def api_accounts_create():
-    data = request.get_json(force=True)
+def account_create(data):
     for field in ['name', 'email', 'badge', 'password']:
         if field in data.keys():
             if data[field]:
@@ -79,9 +77,12 @@ def api_accounts_create():
         assert int(data['badge']) >= 0
     except:
         return jsonify({"success": False, "error": "Badge must be an integer that is greater than or equal to 0."})
-    if len(data['password']) < 8:
+    if data['password'] is None:
+        password_hash = ""
+    elif len(data['password']) < 8:
         return jsonify({"success": False, "error": "Password must be at least 8 characters long."})
-    password_hash = pbkdf2_sha256.hash(data['password'])
+    else:
+        password_hash = pbkdf2_sha256.hash(data['password'])
     with Cursor() as cursor:
         cursor.execute("SELECT badge FROM accounts WHERE badge = %s", (data['badge'],))
         if cursor.fetchall():
@@ -100,6 +101,12 @@ def api_accounts_create():
             return jsonify({"success": True, "account": account})
         else:
             return jsonify({"success": False, "error": "An unknown database error occurred."})
+
+@app.route("/api/accounts/create", methods=['POST'])
+@requires_roles('admin')
+def api_accounts_create():
+    data = request.get_json(force=True)
+    return account_create(data)
 
 @app.route("/api/accounts/delete", methods=['POST'])
 @requires_roles('admin')
@@ -134,7 +141,14 @@ def api_accounts_lookup():
             cursor.execute("SELECT * FROM accounts WHERE badge = %s", (badge,))
             account = cursor.fetchone()
         if not account:
-            return jsonify({"success": False, "type": "unknown", "error": "You do not have a Coldbrew account."})
+            if account_create({
+                "name": uberdata["result"]["first_name"] + " " + uberdata["result"]["last_name"],
+                "email": uberdata["result"]["email"],
+                "badge": uberdata["result"]["badge_num"],
+                "password": None
+            })['success']:
+                return jsonify({"success": False, "type": "unknown", "error": "You do not have a Coldbrew account."})
+            return jsonify({"success": False, "type": "invalid", "error": "Failed to create new account."})
         funds = format_dollars(get_balance(account['id']))
     return jsonify({"success": True, "funds": funds, "account": account})
 

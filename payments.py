@@ -18,7 +18,7 @@ def initialize_plan():
                 "type": "service"
             },
             nickname="Weekly ColdBrew",
-            amount=200,
+            amount=250,
             usage_type="metered"
         )
 
@@ -45,11 +45,20 @@ def create_customer(account, token):
     print(subscription['items']['data'][0]['id'])
     return subscription['items']['data'][0]['id']
 
-def bill_coldbrew(account):
-    stripe.UsageRecord.create(
-        quantity=1,
-        timestamp=int(time.time()),
-        subscription_item=account['stripe_id'],
-        action='increment'
-    )
-    return True
+def bill_coldbrew(account, method="immediate"):
+    if method == "immediate":
+        charge = stripe.Charge.create(
+            amount=250,
+            currency='usd',
+            customer=account['id'],
+        )
+        return True
+    elif method == "subscription":
+        stripe.UsageRecord.create(
+            quantity=1,
+            timestamp=int(time.time()),
+            subscription_item=account['stripe_id'],
+            action='increment'
+        )
+        return True
+    return False
