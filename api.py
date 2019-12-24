@@ -70,7 +70,7 @@ def api_accounts_activate_stripe():
     return jsonify({"success": True})
 
 def account_create(data):
-    for field in ['name', 'email', 'badge', 'password']:
+    for field in ['name', 'email', 'badge']:
         if field in data.keys():
             if data[field]:
                 continue
