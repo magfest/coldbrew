@@ -28,10 +28,9 @@ def api_accounts():
 @requires_roles('admin')
 def api_accounts_activate_cash():
     data = request.get_json(force=True)
-    print(int(data['amount']), get_balance(data['managed_account']))
+    data['amount'] = int(data['amount']) * 100
     if int(data['amount']) + get_balance(data['managed_account']) < 0:
         return jsonify({"success": False, "error": "Account balance cannot go negative."})
-    data['amount'] = int(data['amount']) * 100
     with Cursor() as cursor:
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['managed_account'],))
         managed_account = cursor.fetchone()
@@ -48,11 +47,11 @@ def api_accounts_activate_cash():
 @requires_roles('admin', 'user')
 def api_accounts_activate_stripe():
     data = request.get_json(force=True)
+    data['amount'] = int(data['amount']) * 100
     if int(data['amount']) + get_balance(data['managed_account']) < 0:
         return jsonify({"success": False, "error": "Your overall balance cannot go negative."})
     if int(data['amount']) + get_balance(data['managed_account']) > 10000:
         return jsonify({"success": False, "error": "Your overall balance cannot exceed $100."})
-    data['amount'] = int(data['amount']) * 100
     with Cursor() as cursor:
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['managed_account'],))
         managed_account = cursor.fetchone()
