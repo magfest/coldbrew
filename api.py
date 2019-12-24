@@ -216,5 +216,5 @@ def api_tapstate():
 
 @app.route("/api/report", methods=['POST'])
 def api_report():
-    slack.postText("Drink reported stolen!")
+    #slack.postText("Drink reported stolen!")
     return jsonify({"success": True})
