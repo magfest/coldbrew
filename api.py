@@ -141,13 +141,15 @@ def api_accounts_lookup():
             cursor.execute("SELECT * FROM accounts WHERE badge = %s", (badge,))
             account = cursor.fetchone()
         if not account:
-            account_create({
+            resp = account_create({
                 "name": uberdata["result"]["first_name"] + " " + uberdata["result"]["last_name"],
                 "email": uberdata["result"]["email"],
                 "badge": uberdata["result"]["badge_num"],
                 "password": None
             })
-            return jsonify({"success": False, "type": "invalid", "error": "Failed to create new account."})
+            if resp.get_json()['success']:
+                return jsonify({"success": False, "type": "unknown", "reason": "Email sent."})
+            return jsonify({"success": False, "type": "invalid", "reason": "Failed to register new account."})
         funds = format_dollars(get_balance(account['id']))
     return jsonify({"success": True, "funds": funds, "account": account})
 
