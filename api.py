@@ -28,8 +28,8 @@ def api_accounts():
 @requires_roles('admin')
 def api_accounts_activate_cash():
     data = request.get_json(force=True)
-    if int(data['amount']) < 0:
-        return jsonify({"success": False, "error": "You must provide a positive amount of money for your account."})
+    if int(data['amount']) + get_balance(data['managed_account']) < 0:
+        return jsonify({"success": False, "error": "Account balance cannot go negative."})
     data['amount'] = int(data['amount']) * 100
     with Cursor() as cursor:
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['managed_account'],))
@@ -47,8 +47,8 @@ def api_accounts_activate_cash():
 @requires_roles('admin', 'user')
 def api_accounts_activate_stripe():
     data = request.get_json(force=True)
-    if int(data['amount']) < 0:
-        return jsonify({"success": False, "error": "You must provide a positive amount of money for your account."})
+    if int(data['amount']) + get_balance(data['managed_account']) < 0:
+        return jsonify({"success": False, "error": "Your overall balance cannot go negative."})
     data['amount'] = int(data['amount']) * 100
     with Cursor() as cursor:
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['managed_account'],))
@@ -64,7 +64,7 @@ def api_accounts_activate_stripe():
             cursor.execute("UPDATE accounts SET stripe_id = %s WHERE id = %s", (stripe_id, managed_account['id']))
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (managed_account['id'], data['amount'], "Stripe Transaction", timestamp))
-    slack.postText("Added {} to {} using stripe.".format(format_dollars(data['amount']), managed_account['name']))
+    slack.postText("Changed stripe spend limit for {} by {}.".format(managed_account['name'], format_dollars(data['amount'])))
     return jsonify({"success": True})
 
 def account_create(data):
@@ -113,10 +113,10 @@ def api_accounts_create():
 def api_accounts_delete():
     data = request.get_json(force=True)
     with Cursor() as cursor:
-        if get_balance(data['managed_account']):
-            return jsonify({"success": False, "error": "You cannot delete accounts that currently have a balance."})
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['managed_account'],))
         account = cursor.fetchone()
+        if get_balance(data['managed_account']) and account['payment_type'] == "cash":
+            return jsonify({"success": False, "error": "You cannot delete accounts that currently have a cash balance."})
         cursor.execute("DELETE FROM accounts WHERE id = %s", (data['managed_account'],))
         cursor.execute("DELETE FROM transactions WHERE account = %s", (data['managed_account'],))
     return jsonify({"success": True})
