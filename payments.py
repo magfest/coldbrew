@@ -46,11 +46,14 @@ def create_customer(account, token):
     return subscription['items']['data'][0]['id']
 
 def bill_coldbrew(account, method="immediate"):
+    subscription_item = stripe.SubscriptionItem.retrieve(account['stripe_id'])
+    subscription = stripe.Subscription.retrieve(subscription_item['subscription'])
+    customer = subscription['customer']
     if method == "immediate":
         charge = stripe.Charge.create(
             amount=250,
             currency='usd',
-            customer=account['stripe_id'],
+            customer=customer,
         )
         return True
     elif method == "subscription":
