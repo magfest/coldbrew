@@ -18,7 +18,7 @@ def initialize_plan():
                 "type": "service"
             },
             nickname="Weekly ColdBrew",
-            amount=250,
+            amount=int(secrets.PRICE),
             usage_type="metered"
         )
 
@@ -51,7 +51,7 @@ def bill_coldbrew(account, method="immediate"):
     customer = subscription['customer']
     if method == "immediate":
         charge = stripe.Charge.create(
-            amount=250,
+            amount=int(secrets.PRICE),
             currency='usd',
             customer=customer,
         )

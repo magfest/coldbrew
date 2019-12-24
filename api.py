@@ -169,8 +169,9 @@ def api_pour():
         return jsonify({"success": False, "error": "You must provide a secret key to authorize pours."})
     if not 'account' in data.keys():
         return jsonify({"success": False, "error": "You must provide the id of an account to charge."})
+    amount = int(secrets.PRICE) * -1
     with Cursor() as cursor:
-        if get_balance(data['account']) + data['amount'] < 0:
+        if get_balance(data['account']) + amount < 0:
             return jsonify({"success": False, "error": "Insufficient Funds"})
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (data['account'],))
@@ -178,7 +179,7 @@ def api_pour():
         if account['payment_type'] == "stripe":
             if not payments.bill_coldbrew(account):
                 return jsonify({"success": False, "error": "Failed to authorize transaction with Stripe."})
-        cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (str(data['account']), str(data['amount']), data['note'], timestamp))
+        cursor.execute("INSERT INTO transactions (account, amount, note, timestamp) VALUES (%s, %s, %s, %s)", (str(data['account']), str(amount), data['note'], timestamp))
         slack.postText("{} poured a drink.".format(account['name']))
         return jsonify({"success": True})
 

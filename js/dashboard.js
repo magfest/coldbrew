@@ -96,7 +96,7 @@ function pourDrink() {
                 refreshInterface();
             }
         }
-        xhr.send(JSON.stringify({account: account.id, amount: -200, note: "Poured a Coldbrew", "secret": secretkey}));
+        xhr.send(JSON.stringify({account: account.id, note: "Poured a Coldbrew", "secret": secretkey}));
         mode = "loading";
         refreshInterface();
     }

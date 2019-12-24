@@ -14,6 +14,7 @@ for i in [
     "UBER_URL",
     "UBER_KEY",
     "ADMINS",
+    "PRICE",
 ]:
     if i in os.environ:
         if i in ["ADMINS", "DEFAULT_ADMIN"]:

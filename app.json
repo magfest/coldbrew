@@ -42,6 +42,9 @@
         },
         "ADMINS": {
             "description": "A json list of users to be made admins"
+        },
+        "PRICE": {
+            "description": "The cost in whole cents of each pour"
         }
     },
     "formation": {
