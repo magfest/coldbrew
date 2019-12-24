@@ -50,7 +50,7 @@ def bill_coldbrew(account, method="immediate"):
         charge = stripe.Charge.create(
             amount=250,
             currency='usd',
-            customer=account['id'],
+            customer=account['stripe_id'],
         )
         return True
     elif method == "subscription":
