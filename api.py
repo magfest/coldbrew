@@ -148,8 +148,8 @@ def api_accounts_lookup():
                 "password": None
             })
             if resp.get_json()['success']:
-                return jsonify({"success": False, "type": "unknown", "reason": "Email sent."})
-            return jsonify({"success": False, "type": "invalid", "reason": "Failed to register new account."})
+                return jsonify({"success": False, "type": "unknown", "error": "Email sent."})
+            return jsonify({"success": False, "type": "invalid", "error": "Failed to register new account."})
         funds = format_dollars(get_balance(account['id']))
     return jsonify({"success": True, "funds": funds, "account": account})
 
