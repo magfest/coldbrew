@@ -28,6 +28,7 @@ def api_accounts():
 @requires_roles('admin')
 def api_accounts_activate_cash():
     data = request.get_json(force=True)
+    print(int(data['amount']), get_balance(data['managed_account']))
     if int(data['amount']) + get_balance(data['managed_account']) < 0:
         return jsonify({"success": False, "error": "Account balance cannot go negative."})
     data['amount'] = int(data['amount']) * 100
