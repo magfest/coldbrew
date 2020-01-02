@@ -84,7 +84,7 @@ def activate_stripe(path):
     with Cursor() as cursor:
         cursor.execute("SELECT * FROM accounts WHERE url = %s", (path,))
     account = cursor.fetchone()
-    return render_template('activate-stripe.html', managed_account=account, public_stripe_key=secrets.PUBLIC_STRIPE_KEY)
+    return render_template('activate-stripe.html', managed_account=account, account=account, public_stripe_key=secrets.PUBLIC_STRIPE_KEY)
 
 @app.route("/js/<path:path>")
 def send_js(path):
