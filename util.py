@@ -94,7 +94,7 @@ def get_current_user_role():
             account = cursor.fetchone()
             if account:
                 _, cookies = check_login()
-                return account, cookies
+                return "user", cookies
     account, cookies = check_login()
     if account:
         if account['name'] in secrets.ADMINS:
