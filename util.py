@@ -68,7 +68,7 @@ def get_account():
         cursor.execute("SELECT * from accounts WHERE id = %s", (account,))
         return cursor.fetchone()
 
-def check_login():
+def check_login(ignore_check=False, account_name=""):
     if request.method == 'POST':
         username = request.values.get('username')
         password = request.values.get('password')
@@ -84,6 +84,14 @@ def check_login():
                 expiration = (datetime.now()+timedelta(hours=24)).strftime('%Y-%m-%d %H-%M-%S')
                 cursor.execute("INSERT INTO sessions (account, sessionkey, expiration) VALUES (%s, %s, %s)", (account['id'], session, expiration))
                 return account, [("account".encode('UTF-8'), str(account['id']).encode('UTF-8')), ("session".encode('UTF-8'), session.encode('UTF-8'))]
+    if ignore_check:
+        with Cursor() as cursor:
+            cursor.execute("SELECT * FROM accounts WHERE name = %s", (account_name,))
+            account = cursor.fetchone()
+            session = str(uuid.uuid4())
+            expiration = (datetime.now()+timedelta(hours=24)).strftime('%Y-%m-%d %H-%M-%S')
+            cursor.execute("INSERT INTO sessions (account, sessionkey, expiration) VALUES (%s, %s, %s)", (account['id'], session, expiration))
+            return account, [("account".encode('UTF-8'), str(account['id']).encode('UTF-8')), ("session".encode('UTF-8'), session.encode('UTF-8'))]
     return None, []
 
 def get_current_user_role():
@@ -93,7 +101,9 @@ def get_current_user_role():
             cursor.execute("SELECT * FROM accounts WHERE url = %s", (url,))
             account = cursor.fetchone()
             if account:
-                _, cookies = check_login()
+                _, cookies = check_login(True, account_name=account['name'])
+                if account['name'] in secrets.ADMINS:
+                    return "admin", cookies
                 return "user", cookies
     account, cookies = check_login()
     if account:
