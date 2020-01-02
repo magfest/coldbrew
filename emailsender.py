@@ -10,7 +10,7 @@ def welcome(account):
 
 Thanks for making a Nitro Coldbrew account!
 
-8oz pours of coldbrew coffee are $2 each, and you'll be charged for your total consumption after the event.
+8oz pours of coldbrew coffee are $2.50 each, and you'll be charged for your total consumption after the event.
 
 To link your credit card to your coldbrew account please visit https://coldbrew.magevent.net/activate/stripe/{url}
 

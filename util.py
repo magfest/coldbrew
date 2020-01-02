@@ -87,6 +87,14 @@ def check_login():
     return None, []
 
 def get_current_user_role():
+    if "path" in request.view_args:
+        url = request.view_args["path"]
+        with Cursor() as cursor:
+            cursor.execute("SELECT * FROM accounts WHERE url = %s", (url,))
+            account = cursor.fetchone()
+            if account:
+                _, cookies = check_login()
+                return account, cookies
     account, cookies = check_login()
     if account:
         if account['name'] in secrets.ADMINS:
